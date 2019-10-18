@@ -10,7 +10,10 @@ html, body {
     padding: 0;
     margin: 0;
 }
-
+.m-container{
+    display: flex;
+    flex-wrap: wrap;
+}
   
   .wrapper {
     width: 300px;
