@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Game App</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+      <div id="app">
+         <card v-for="game in games" :game="game"></card>  
+      </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+    const template = `<div class="wrapper">
+                <div class="container">
+                  <div class="top"><img :src="\`https:\${game.cover.url.replace('t_thumb', 't_cover_big')}\`"></div>
+                  <div class="bottom">
+                    <div class="left">
+                      <div class="details">
+                        <h1>{{game.name}}</h1>
+                        <p>{{}}</p>
+                      </div>
+                      <div class="buy"><i class="material-icons">star</i></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="inside">
+                  <div class="icon"><i class="material-icons">info_outline</i></div>
+                  <div class="contents">
+                        <h1 style="font-size: 30px;">About</h1>
+                        <p>{{game.summary}}</p>
+                  </div>
+                </div>
+              </div> `
+    const key = '7257fad2aa677ccb2ef492c149ec5a63';
+    const proxy = 'https://cors-anywhere.herokuapp.com/';
+    const url = 'https://api-v3.igdb.com';
+        Vue.component('card', {
+            props: ['game'],
+            template,    
+        })
+    
+let search = async function(endpoint,fields,filter=""){
+                    
+            var respone = await fetch(`${proxy}${url}/${endpoint}`,{
+            headers:{
+            'user-key': key,
+            'Conetent-type': 'application/json'
+            },
+            method: 'POST',
+            body: `f ${fields.join(",")};${filter}`
+            });
+            this.games = await respone.json();
+        
+                
+}
+let test = async function(endpoint,fields,filter=""){
+                    
+    var respone = await fetch(`${proxy}${url}/${endpoint}`, {
+        headers: {
+            'user-key': key,
+            'Conetent-type': 'application/json'
+        },
+        method: 'POST',
+        body: `f ${fields.join(",")};${filter}`
+    });
+    respone.json().then(function (r) {
+        console.log(r);
+    });
+}
+    test("games",["name","cover.url","genres.name","summary"],"w rating > 95;");                     
+    const app = new Vue({
+        el: "#app",
+        data: {
+            message: "app",
+            games: []
+
+        },
+
+        methods:{
+            search,
+           
+        },
+
+        mounted(){
+            
+            this.search("games",["name","cover.url","genres.name","summary"],"w rating > 95;");
+            // this.search("covers",["url"],"w id = 22963;");
+            // "where rating >= 90 & release_dates.date > 631152019;" 
+         
+        }
+
+
+    });
+
+</script>
+</html>
