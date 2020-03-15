@@ -2,7 +2,7 @@
   <div class="card"> 
         <div class="gradient"></div>
         <img :src="'https:' + game.cover.url.replace('t_thumb', 't_cover_big')">
-        <span class="tag">{{ genres }}</span>
+        <span class="tag">{{ platforms }}</span>
         <p>{{game.name}}</p>
     </div>
 </template>
@@ -16,12 +16,20 @@ export default {
   computed: {
 
   genres: function () {
-    let i;
-    let genres = "";
-    for(i=0; i<this.game.genres.length; i++){
-      genres += this.game.genres[i].name;
-    }
+      let i;
+      let genres = "";
+      for(i=0; i<this.game.genres.length; i++){
+        genres += this.game.genres[i].name;
+      }
       return genres
+    },
+  platforms: function () {
+      let i;
+      let platforms = "";
+      for(i=0; i<this.game.platforms.length && i<3; i++){
+        platforms += ` ${this.game.platforms[i].abbreviation}`;
+      }
+      return platforms
     }
   }
 }
@@ -34,7 +42,29 @@ export default {
   position: relative;
   border-radius: 5px;
   margin: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 0 rgba(80,216,144,0.4);
+  background: black;
 }
+.card:hover{
+    -moz-animation: pulse 2s infinite;
+    -webkit-animation: pulse 2s infinite;
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(80,216,144,0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(80,216,144,0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(80,216,144,0);
+    }
+}
+
+
+
 .card img{
   width: 100%;
   position: absolute;
@@ -48,8 +78,8 @@ export default {
   width: 100%;
   height: 100%;
   
-  background: rgb(0,0,0);
-  background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(255,255,255,0) 35%, rgba(0,0,0,1) 100%);
+background: rgb(0,0,0);
+background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(255,255,255,0) 25%, rgba(241,238,238,0) 75%, rgba(0,0,0,1) 100%);
   z-index: 3;
 }
 .card span{
@@ -83,8 +113,19 @@ export default {
     z-index: 5;
 
 }
-background: rgb(0,0,0);
-background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(255,255,255,0) 35%, rgba(0,0,0,1) 100%);
+@media only screen and (max-width: 600px) {
+  .card {
+    width: 90px;
+    height: 120px;
+    border-radius: 0;
+  }
+  .card span{
+    visibility: hidden;
+  }
+  .card p{
+    visibility: hidden;
+  }
+}
 </style>
 
 

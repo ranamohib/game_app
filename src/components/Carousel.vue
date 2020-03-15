@@ -1,15 +1,24 @@
 <template>
-  <div id="">
-    <Card v-for="game in games" :game="game" :key="game.id"></Card>
+  <div class="carousel">
+    <h2>{{ title }}</h2>
+    <div class="container">
+      <carousel :items="6" :dots="false" :responsive="{0:{items:3,nav:false},600:{items:6,nav:true}}">
+        <Card v-for="game in games" :key="game.id" :game="game"></Card>
+      </carousel>
+
+    </div>
   </div>
 </template>
 
 <script>
 import Card from './Card.vue'
+import carousel from 'vue-owl-carousel'
 
 const key = '7257fad2aa677ccb2ef492c149ec5a63';
 const proxy = 'https://cors-anywhere.herokuapp.com/';
 const url = 'https://api-v3.igdb.com';
+let currentTimeStamp = parseInt((new Date().getTime() / 1000).toFixed(0));
+
 
 let search = async function(endpoint,fields,filter=""){
                     
@@ -22,7 +31,7 @@ let search = async function(endpoint,fields,filter=""){
     body: `f ${fields.join(",")};${filter}`
     });
     this.games = await respone.json();
-        
+    await console.log(this.games)    
                 
 }
 let test = async function(endpoint,fields,filter=""){
@@ -45,10 +54,12 @@ test("games",["name","cover.url","genres.name","summary"],"w rating > 95;");
 export default {
   name: 'Carousel',
   props: [
-      "game"
+      "game",
+      "title"
   ],
   components: {
-    Card
+    Card,
+    carousel
   },
 
   // asyncData ({ params, error }) {
@@ -65,7 +76,8 @@ export default {
   // },
   data() {
     return {
-      games: []
+      games: [],
+
     }  
   },
 
@@ -76,7 +88,7 @@ export default {
 
     mounted(){
             
-      this.search("games",["name","cover.url","genres.name","summary"],"w rating > 95;");
+      this.search("games",["name","cover.url","genres.name","summary","platforms.abbreviation","popularity","release_dates.date"],"where platforms = (48,49,6) & cover != null & release_dates.date > "+currentTimeStamp+";sort popularity desc;");
       // this.search("covers",["url"],"w id = 22963;");
       // "where rating >= 90 & release_dates.date > 631152019;" 
          
@@ -84,6 +96,20 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.carousel{
+  width: 85%;
+  margin: auto;
 
+}
+h2{
+  margin-bottom: 10px;
+}
+@media only screen and (max-width: 600px) {
+  h2{
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 0;
+  }
+}
 </style>
